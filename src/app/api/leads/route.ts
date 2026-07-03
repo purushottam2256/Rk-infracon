@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import nodemailer from "nodemailer";
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,6 +37,42 @@ export async function POST(request: NextRequest) {
         { error: "Failed to submit inquiry. Please try again." },
         { status: 500 }
       );
+    }
+
+    // Send email notification
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST || "smtp.gmail.com",
+          port: parseInt(process.env.SMTP_PORT || "587"),
+          secure: process.env.SMTP_SECURE === "true",
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        await transporter.sendMail({
+          from: `"RK Infracon Website" <${process.env.SMTP_USER}>`,
+          to: "info@rkinfracon.in",
+          subject: `New Lead: ${name} - ${projectInterest || "General"}`,
+          html: `
+            <h2>New Inquiry Received</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Project Interest:</strong> ${projectInterest || "General"}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message || "No message provided."}</p>
+            <p><strong>Source:</strong> ${source || "website"}</p>
+            <br/>
+            <p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin">View Lead in Admin Panel</a></p>
+          `,
+        });
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+        // Continue and return success since it's saved in DB
+      }
     }
 
     return NextResponse.json(

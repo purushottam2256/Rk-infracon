@@ -15,10 +15,10 @@ export default function HomePage() {
       <HeroSection />
       <SearchFilter />
       <FeaturedVentures />
+      <CTASection />
       <WhyChooseUs />
       <TestimonialsSection />
       <FAQSection />
-      <CTASection />
       <Footer />
     </main>
   );

@@ -59,8 +59,8 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# Site URL
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+# Site URL (Use http://localhost:3000 for local development)
+NEXT_PUBLIC_SITE_URL=https://www.rkinfracon.in
 ```
 
 ### 4. Run the development server
@@ -71,8 +71,9 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the public application.
-To access the admin panel, navigate to [http://localhost:3000/admin](http://localhost:3000/admin).
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the public application locally.
+For the live production website, visit **[https://www.rkinfracon.in](https://www.rkinfracon.in)**.
+To access the live admin panel, navigate to **[https://www.rkinfracon.in/admin](https://www.rkinfracon.in/admin)**.
 
 ## 📂 Project Structure
 

@@ -136,8 +136,54 @@ export default function AboutPage() {
 
 
 
-      {/* Our Philosophy & Values */}
+      {/* Leadership Section */}
       <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-5 relative">
+              <div className="relative h-[600px] w-full rounded-3xl overflow-hidden border border-cream-dark shadow-2xl">
+                <Image
+                  src="/cmd-rama-krishna.jpg"
+                  alt="Mr. Rama Krishna - CMD"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-lg">
+                    <h3 className="font-heading text-xl font-bold text-navy">Mr. Rama Krishna</h3>
+                    <p className="text-gold font-semibold text-sm">Chairman & Managing Director</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="lg:col-span-7 space-y-6">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 text-gold text-xs font-semibold uppercase tracking-wider">
+                <Users className="w-3.5 h-3.5" />
+                Leadership
+              </span>
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">
+                Meet Our <span className="text-gradient-gold">CMD</span>
+              </h2>
+              <div className="space-y-6 text-slate-medium leading-relaxed text-lg">
+                <p>
+                  Mr. Rama Krishna, the visionary Chairman and Managing Director of RK Infracon, has been the driving force behind the company&apos;s extraordinary success and reputation in the real estate sector. With deep-rooted expertise in land acquisition and urban development, he founded the company with a simple yet profound mission: to provide every family with a transparent, legally secure, and highly profitable investment opportunity.
+                </p>
+                <p>
+                  Under his astute leadership, RK Infracon has transformed from a promising startup into one of Telangana&apos;s most trusted developers. His hands-on approach ensures that every venture adheres to the highest standards of quality, strictly following DTCP and RERA regulations. Mr. Rama Krishna firmly believes that trust is built through absolute transparency and a customer-first mindset.
+                </p>
+                <p>
+                  &quot;Real estate is not just about selling land; it is about securing a family&apos;s future,&quot; says Mr. Rama Krishna. His relentless focus on strategic locations, sustainable infrastructure, and uncompromising ethics continues to guide RK Infracon as it shapes the future of premium open plots and gated communities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Philosophy & Values */}
+      <section className="py-20 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-12">
             <div>
