@@ -22,6 +22,7 @@ import {
   X,
   MessageSquare,
 } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 
 interface Lead {
   id: string;
@@ -227,9 +228,7 @@ export default function LeadsPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 text-gold animate-spin" />
-        </div>
+        <HouseLoader className="py-20" />
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <AlertCircle className="w-12 h-12 text-amber-500 mb-4" />

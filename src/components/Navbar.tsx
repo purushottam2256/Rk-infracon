@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, ChevronDown, Settings } from "lucide-react";
-import { NAV_LINKS, COMPANY_INFO } from "@/lib/constants";
+import { Menu, X, Phone, ChevronDown, Settings as SettingsIcon } from "lucide-react";
+import { NAV_LINKS } from "@/lib/constants";
+import { useSettings } from "@/context/SettingsContext";
 
 interface NavProject {
   title: string;
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [projects, setProjects] = useState<NavProject[]>([]);
   const pathname = usePathname();
+  const settings = useSettings();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,32 +68,32 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  const formattedPhone = COMPANY_INFO.phone.replace(/(\d{5})(\d{5})/, "$1 $2");
+  const formattedPhone = settings.phone.replace(/(\d{5})(\d{5})/, "$1 $2");
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-navy/95  shadow-2xl shadow-navy/20 py-2"
-          : "bg-transparent py-4"
+          ? "bg-navy/95 shadow-2xl shadow-navy/20 py-2 backdrop-blur-md"
+          : "bg-navy/90 shadow-lg py-4 backdrop-blur-sm"
       }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/#hero-section" className="flex items-center gap-3 group" id="nav-logo">
-            <div className="relative">
-              <div className="w-12 h-12 flex items-center justify-center transform transition-transform group-hover:scale-105 shadow-lg rounded-full overflow-hidden">
+          <Link href="/#hero-section" className="flex items-center gap-2 sm:gap-4 group" id="nav-logo">
+            <div className="relative shrink-0">
+              <div className="w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center transform transition-transform group-hover:scale-105 shadow-lg rounded-full overflow-hidden">
                 <img src="/logo.png" alt="RK Infracon Logo" className="w-full h-full object-contain" />
               </div>
-              <div className="absolute -inset-1 bg-gold/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute -inset-1 sm:-inset-1.5 bg-gold/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-white font-heading font-bold text-xl tracking-wide leading-tight">
-                RK Infracon
+            <div className="flex flex-col min-w-0">
+              <span className="text-white font-heading font-extrabold text-lg sm:text-3xl tracking-wider sm:tracking-widest leading-none drop-shadow-md truncate">
+                RK INFRACON
               </span>
-              <span className="text-gold/70 text-[10px] uppercase tracking-[0.2em] font-medium">
-                {COMPANY_INFO.tagline}
+              <span className="text-gold/80 text-[8px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.25em] font-bold mt-1 sm:mt-1.5 drop-shadow-sm truncate">
+                {settings.tagline}
               </span>
             </div>
           </Link>
@@ -149,7 +151,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
 
             <a
-              href={`tel:${COMPANY_INFO.phone}`}
+              href={`tel:${settings.phone}`}
               id="nav-call-now"
               className="group flex items-center gap-2.5 bg-gradient-gold text-navy px-5 py-2.5 rounded-full font-semibold text-sm hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105"
             >
@@ -229,7 +231,7 @@ export default function Navbar() {
             <div className="pt-2 border-t border-gold/10 space-y-2">
 
               <a
-                href={`tel:${COMPANY_INFO.phone}`}
+                href={`tel:${settings.phone}`}
                 className="flex items-center justify-center gap-2 bg-gradient-gold text-navy px-5 py-3 rounded-xl font-semibold text-sm"
               >
                 <Phone className="w-4 h-4" />

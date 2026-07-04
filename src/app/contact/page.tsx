@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Clock, MessageSquare, CalendarDays } from "lucide-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContactFormsTabs from "@/components/ContactFormsTabs";
-import { COMPANY_INFO } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Contact Us – RK Infracon | Get in Touch",
@@ -11,38 +11,40 @@ export const metadata: Metadata = {
     "Contact RK Infracon to schedule a free site visit, inquire about our premium plots, or learn more about our ventures. We're here to help.",
 };
 
-const contactInfo = [
-  {
-    icon: Phone,
-    label: "Phone",
-    value: COMPANY_INFO.phone,
-    href: `tel:${COMPANY_INFO.phone}`,
-    description: "Call us for immediate assistance",
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: COMPANY_INFO.email,
-    href: `mailto:${COMPANY_INFO.email}`,
-    description: "Drop us an email anytime",
-  },
-  {
-    icon: MapPin,
-    label: "Office",
-    value: COMPANY_INFO.address,
-    href: "#",
-    description: "Visit our office",
-  },
-  {
-    icon: Clock,
-    label: "Working Hours",
-    value: COMPANY_INFO.workingHours,
-    href: "#",
-    description: "We're available during",
-  },
-];
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
 
-export default function ContactPage() {
+  const contactInfo = [
+    {
+      icon: Phone,
+      label: "Phone",
+      value: settings.phone,
+      href: `tel:${settings.phone}`,
+      description: "Call us for immediate assistance",
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      value: settings.email,
+      href: `mailto:${settings.email}`,
+      description: "Drop us an email anytime",
+    },
+    {
+      icon: MapPin,
+      label: "Office",
+      value: settings.address,
+      href: "#",
+      description: "Visit our office",
+    },
+    {
+      icon: Clock,
+      label: "Working Hours",
+      value: settings.workingHours,
+      href: "#",
+      description: "We're available during",
+    },
+  ];
+
   return (
     <main>
       <Navbar />

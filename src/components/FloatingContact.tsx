@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function FloatingContact() {
   const pathname = usePathname();
@@ -11,8 +11,9 @@ export default function FloatingContact() {
   if (pathname?.startsWith("/admin")) {
     return null;
   }
+  const settings = useSettings();
 
-  const phoneNum = COMPANY_INFO.phone.replace(/[^0-9]/g, "");
+  const phoneNum = settings.phone.replace(/[^0-9]/g, "");
   const whatsappUrl = `https://wa.me/91${phoneNum}?text=Hello%20RK%20Infracon%2C%0AI%20am%20interested%20in%20your%20plots.%20Please%20share%20more%20details.`;
 
   return (
@@ -33,7 +34,7 @@ export default function FloatingContact() {
 
       {/* Phone Call */}
       <a
-        href={`tel:${COMPANY_INFO.phone}`}
+        href={`tel:${settings.phone}`}
         id="floating-call"
         aria-label="Call Us"
         className="w-14 h-14 rounded-full bg-gradient-gold flex items-center justify-center shadow-xl shadow-gold/30 hover:scale-105 transition-transform animate-pulse-gold"

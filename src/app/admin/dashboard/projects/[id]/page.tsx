@@ -7,6 +7,7 @@ import {
   ArrowLeft, Save, Loader2, Upload, X, Plus, Trash2, ImageIcon,
 } from "lucide-react";
 import { uploadImage, compressImage } from "@/lib/image-utils";
+import HouseLoader from "@/components/HouseLoader";
 
 interface ProjectData {
   title: string; location: string; description: string; short_description: string;
@@ -137,9 +138,7 @@ export default function ProjectEditorPage() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center py-20">
-      <Loader2 className="w-8 h-8 text-gold animate-spin" />
-    </div>
+    <HouseLoader className="py-20" />
   );
 
   const ImageUploadBox = ({ field, label, maxW, current }: {

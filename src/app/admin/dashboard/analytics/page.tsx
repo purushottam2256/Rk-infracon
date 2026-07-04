@@ -17,6 +17,7 @@ import {
   ArrowUpRight,
   Globe2,
 } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 
 interface Analytics {
   today: { pageViews: number; uniqueVisitors: number };
@@ -81,11 +82,7 @@ export default function AnalyticsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-gold animate-spin" />
-      </div>
-    );
+    return <HouseLoader className="py-20" />;
   }
 
   if (!data) {

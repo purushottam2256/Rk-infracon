@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 import { ImageIcon, Play, X, Loader2 } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 import { PLACEHOLDER_IMAGES } from "@/lib/constants";
 
 const tabs = [
@@ -95,9 +96,7 @@ export default function GalleryContent() {
         {/* Images Grid */}
         {activeTab === "images" && (
           loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 text-gold animate-spin" />
-            </div>
+            <HouseLoader className="py-20" />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {galleryImages.map((img, i) => (
@@ -106,7 +105,13 @@ export default function GalleryContent() {
                   onClick={() => setLightboxIndex(i)}
                   className="relative h-56 rounded-2xl overflow-hidden cursor-pointer group"
                 >
-                  <Image src={img.src} alt={img.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+                  <ImageWithFallback
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <p className="text-white text-sm font-medium">{img.alt}</p>
@@ -123,7 +128,7 @@ export default function GalleryContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {videos.map((video, i) => (
               <div key={i} className="relative h-64 rounded-2xl overflow-hidden cursor-pointer group bg-navy">
-                <Image src={video.thumbnail} alt={video.title} fill className="object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500" sizes="(max-width: 640px) 100vw, 50vw" />
+                <ImageWithFallback src={video.thumbnail} alt={video.title} fill className="object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500" sizes="(max-width: 640px) 100vw, 50vw" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <div className="w-16 h-16 rounded-full bg-gold/90 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-xl">
                     <Play className="w-7 h-7 text-navy fill-navy ml-1" />
@@ -143,7 +148,7 @@ export default function GalleryContent() {
             <X className="w-8 h-8" />
           </button>
           <div className="relative w-full max-w-5xl h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            <Image
+            <ImageWithFallback
               src={galleryImages[lightboxIndex].src}
               alt={galleryImages[lightboxIndex].alt}
               fill

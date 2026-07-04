@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Scale } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Terms of Service – RK Infracon",
   description: "Terms and conditions for using RK Infracon services and website.",
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const settings = await getSiteSettings();
+
   return (
     <main>
       <Navbar />
@@ -46,12 +48,12 @@ export default function TermsPage() {
               <li>All property details, specifications, floor plans, and amenities mentioned on this website are subject to change without prior notice.</li>
               <li>Pricing information provided is indicative and may vary based on specific plot location, facing, size, and current market conditions.</li>
               <li>Visual representations, including images, renderings, and videos, are for illustrative purposes only and may not exactly represent the final product.</li>
-              <li>Final terms of any property purchase will be governed strictly by the actual sale agreement and legal documents signed between the buyer and <strong className="text-navy">{COMPANY_INFO.name}</strong>.</li>
+              <li>Final terms of any property purchase will be governed strictly by the actual sale agreement and legal documents signed between the buyer and <strong className="text-navy">{settings.name}</strong>.</li>
             </ul>
 
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">3. Intellectual Property Rights</h3>
             <p>
-              The content on this website, including but not limited to text, graphics, logos, images, audio clips, digital downloads, and software, is the property of <strong className="text-navy">{COMPANY_INFO.name}</strong> or its content suppliers and is protected by copyright and other intellectual property laws.
+              The content on this website, including but not limited to text, graphics, logos, images, audio clips, digital downloads, and software, is the property of <strong className="text-navy">{settings.name}</strong> or its content suppliers and is protected by copyright and other intellectual property laws.
             </p>
 
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">4. User Conduct</h3>
@@ -66,7 +68,7 @@ export default function TermsPage() {
 
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">5. Limitation of Liability</h3>
             <p>
-              <strong className="text-navy">{COMPANY_INFO.name}</strong> shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or the inability to use the website or services, including but not limited to damages for loss of profits, use, data, or other intangibles.
+              <strong className="text-navy">{settings.name}</strong> shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or the inability to use the website or services, including but not limited to damages for loss of profits, use, data, or other intangibles.
             </p>
 
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">6. External Links</h3>
@@ -84,9 +86,9 @@ export default function TermsPage() {
               If you have any questions regarding these Terms of Service, please contact us at:
             </p>
             <p className="bg-cream p-4 rounded-xl border border-cream-dark inline-block">
-              <strong className="text-navy">Email:</strong> <a href={`mailto:${COMPANY_INFO.email}`} className="text-gold hover:text-gold-dark">{COMPANY_INFO.email}</a><br />
-              <strong className="text-navy">Phone:</strong> <a href={`tel:${COMPANY_INFO.phone}`} className="text-gold hover:text-gold-dark">{COMPANY_INFO.phone}</a><br />
-              <strong className="text-navy mt-1 block">Address:</strong> {COMPANY_INFO.address}
+              <strong className="text-navy">Email:</strong> <a href={`mailto:${settings.email}`} className="text-gold hover:text-gold-dark">{settings.email}</a><br />
+              <strong className="text-navy">Phone:</strong> <a href={`tel:${settings.phone}`} className="text-gold hover:text-gold-dark">{settings.phone}</a><br />
+              <strong className="text-navy mt-1 block">Address:</strong> {settings.address}
             </p>
           </div>
         </div>

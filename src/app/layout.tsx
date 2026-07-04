@@ -39,18 +39,24 @@ export const metadata: Metadata = {
 
 import FloatingContact from "@/components/FloatingContact";
 import VisitorTracker from "@/components/VisitorTracker";
+import { getSiteSettings } from "@/lib/settings";
+import { SettingsProvider } from "@/context/SettingsContext";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="antialiased">
-        {children}
-        <FloatingContact />
-        <VisitorTracker />
+        <SettingsProvider settings={settings}>
+          {children}
+          <FloatingContact />
+          <VisitorTracker />
+        </SettingsProvider>
       </body>
     </html>
   );

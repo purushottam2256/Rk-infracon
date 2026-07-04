@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ImageIcon, Users, TrendingUp, ArrowUpRight, Building2, Calendar, Mail, Loader2, Sparkles, Phone } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 import { COMPANY_INFO } from "@/lib/constants";
 
 interface Lead {
@@ -153,9 +154,7 @@ export default function DashboardPage() {
           
           <div className="p-0">
             {loading ? (
-              <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-gold" />
-              </div>
+              <HouseLoader className="py-12" />
             ) : leads.length === 0 ? (
               <div className="py-12 text-center text-slate-medium text-sm">
                 No recent inquiries found.

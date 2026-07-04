@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Phone, ArrowRight, MapPin } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
 import InquiryForm from "@/components/InquiryForm";
+import { getSiteSettings } from "@/lib/settings";
 
-export default function CTASection() {
+export default async function CTASection() {
+  const settings = await getSiteSettings();
+
   return (
     <section className="py-20 lg:py-28 bg-navy relative overflow-hidden" id="cta-section">
       {/* Background Decorations */}
@@ -29,13 +31,13 @@ export default function CTASection() {
 
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
               <a
-                href={`tel:${COMPANY_INFO.phone}`}
+                href={`tel:${settings.phone}`}
                 className="flex items-center gap-3 px-6 py-3 rounded-full bg-gold/10 border border-gold/20 text-gold hover:bg-gold/20 transition-all duration-300"
               >
                 <Phone className="w-5 h-5" />
                 <div>
                   <span className="text-xs text-white/40 block">Call Us At</span>
-                  <span className="text-sm font-semibold">{COMPANY_INFO.phone}</span>
+                  <span className="text-sm font-semibold">{settings.phone}</span>
                 </div>
               </a>
               <Link

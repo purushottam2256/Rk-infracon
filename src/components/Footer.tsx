@@ -11,7 +11,8 @@ import {
   ArrowUpRight,
   ChevronRight,
 } from "lucide-react";
-import { NAV_LINKS, COMPANY_INFO } from "@/lib/constants";
+import { NAV_LINKS } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/settings";
 import { createAdminClient } from "@/lib/supabase/server";
 
 async function getProjectsForFooter() {
@@ -37,6 +38,7 @@ async function getProjectsForFooter() {
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
   const projects = await getProjectsForFooter();
+  const settings = await getSiteSettings();
 
   return (
     <footer className="bg-gradient-navy text-white relative overflow-hidden">
@@ -69,7 +71,7 @@ export default async function Footer() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
               <a
-                href={`tel:${COMPANY_INFO.phone}`}
+                href={`tel:${settings.phone}`}
                 className="border border-gold/40 text-gold px-7 py-3 rounded-full font-semibold text-sm hover:bg-gold/10 transition-all duration-300 flex items-center gap-2"
               >
                 <Phone className="w-4 h-4" />
@@ -96,27 +98,43 @@ export default async function Footer() {
               </div>
             </Link>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
-              {COMPANY_INFO.tagline}. We deliver premium DTCP approved & RERA
+              {settings.tagline}. We deliver premium DTCP approved & RERA
               registered open plots with world-class amenities and transparent
               transactions.
             </p>
             <div className="flex gap-3">
-              {[
-                { icon: Globe, href: COMPANY_INFO.socialLinks.facebook, label: "Facebook" },
-                { icon: Camera, href: COMPANY_INFO.socialLinks.instagram, label: "Instagram" },
-                { icon: Play, href: COMPANY_INFO.socialLinks.youtube, label: "YouTube" },
-                { icon: Briefcase, href: COMPANY_INFO.socialLinks.linkedin, label: "LinkedIn" },
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
-                >
-                  <social.icon className="w-4 h-4" />
-                </a>
-              ))}
+              <a
+                href={settings.facebookUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
+              >
+                <Globe className="w-4 h-4" />
+              </a>
+              <a
+                href={settings.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
+              >
+                <Camera className="w-4 h-4" />
+              </a>
+              <a
+                href={settings.youtubeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
+              >
+                <Play className="w-4 h-4" />
+              </a>
+              <a
+                href={settings.linkedinUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
+              >
+                <Briefcase className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
@@ -178,26 +196,26 @@ export default async function Footer() {
             </h4>
             <div className="space-y-4">
               <a
-                href={`tel:${COMPANY_INFO.phone}`}
+                href={`tel:${settings.phone}`}
                 className="flex items-start gap-3 text-white/50 hover:text-gold transition-all duration-200 group"
               >
                 <Phone className="w-4 h-4 mt-0.5 text-gold/60 group-hover:text-gold" />
-                <span className="text-sm">{COMPANY_INFO.phone}</span>
+                <span className="text-sm">{settings.phone}</span>
               </a>
               <a
-                href={`mailto:${COMPANY_INFO.email}`}
+                href={`mailto:${settings.email}`}
                 className="flex items-start gap-3 text-white/50 hover:text-gold transition-all duration-200 group"
               >
                 <Mail className="w-4 h-4 mt-0.5 text-gold/60 group-hover:text-gold" />
-                <span className="text-sm">{COMPANY_INFO.email}</span>
+                <span className="text-sm">{settings.email}</span>
               </a>
               <div className="flex items-start gap-3 text-white/50">
                 <MapPin className="w-4 h-4 mt-0.5 text-gold/60 shrink-0" />
-                <span className="text-sm">{COMPANY_INFO.address}</span>
+                <span className="text-sm">{settings.address}</span>
               </div>
               <div className="flex items-start gap-3 text-white/50">
                 <Clock className="w-4 h-4 mt-0.5 text-gold/60" />
-                <span className="text-sm">{COMPANY_INFO.workingHours}</span>
+                <span className="text-sm">{settings.workingHours}</span>
               </div>
             </div>
           </div>

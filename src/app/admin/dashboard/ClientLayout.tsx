@@ -16,6 +16,8 @@ import {
   Settings,
   BarChart3,
   Image,
+  HelpCircle,
+  MessageSquareQuote,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -25,6 +27,8 @@ const sidebarLinks = [
   { href: "/admin/dashboard/gallery", label: "Gallery", icon: Image },
   { href: "/admin/dashboard/images", label: "Site Images", icon: ImageIcon },
   { href: "/admin/dashboard/leads", label: "Leads", icon: Users },
+  { href: "/admin/dashboard/testimonials", label: "Testimonials", icon: MessageSquareQuote },
+  { href: "/admin/dashboard/faqs", label: "FAQs", icon: HelpCircle },
   { href: "/admin/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/dashboard/settings", label: "Site Settings", icon: Settings },
 ];

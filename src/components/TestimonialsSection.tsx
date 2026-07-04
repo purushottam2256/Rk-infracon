@@ -3,53 +3,40 @@
 import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
-const testimonials = [
-  {
-    name: "Rajesh Kumar",
-    role: "Plot Owner, RK Green Valley",
-    text: "Excellent experience with RK Infracon! The plots are exactly as promised — wide roads, proper drainage, and greenery everywhere. The team was transparent throughout the process. Highly recommend!",
-    rating: 5,
-  },
-  {
-    name: "Priya Sharma",
-    role: "Investor, RK Paradise Enclave",
-    text: "I purchased two plots as an investment and the appreciation has been fantastic. The location near ORR is strategic and the development quality is top-notch. Very trustworthy company.",
-    rating: 5,
-  },
-  {
-    name: "Suresh Reddy",
-    role: "Plot Owner, RK Heritage Heights",
-    text: "What impressed me most was the no-broker policy. Dealing directly with the company meant fair pricing and no hidden costs. My family is now building our dream home on the plot!",
-    rating: 5,
-  },
-  {
-    name: "Anitha Rao",
-    role: "Homeowner, RK Green Valley",
-    text: "From site visit to registration, everything was smooth. The DTCP approval and RERA registration gave us complete peace of mind. The community is wonderful with great amenities.",
-    rating: 5,
-  },
-];
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+}
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({
+  initialTestimonials = [],
+}: {
+  initialTestimonials?: Testimonial[];
+}) {
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || initialTestimonials.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % testimonials.length);
+      setCurrent((prev) => (prev + 1) % initialTestimonials.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, initialTestimonials.length]);
 
   const next = () => {
-    setCurrent((prev) => (prev + 1) % testimonials.length);
+    setCurrent((prev) => (prev + 1) % initialTestimonials.length);
     setIsAutoPlaying(false);
   };
   const prev = () => {
-    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setCurrent((prev) => (prev - 1 + initialTestimonials.length) % initialTestimonials.length);
     setIsAutoPlaying(false);
   };
+
+  if (!initialTestimonials || initialTestimonials.length === 0) return null;
 
   return (
     <section className="py-20 bg-navy relative overflow-hidden">
@@ -71,17 +58,17 @@ export default function TestimonialsSection() {
           <div className="bg-white/5  border border-white/10 rounded-3xl p-8 sm:p-12">
             <Quote className="w-10 h-10 text-gold/30 mb-6" />
             <p className="text-white/80 text-lg leading-relaxed mb-8 min-h-[80px]">
-              &ldquo;{testimonials[current].text}&rdquo;
+              &ldquo;{initialTestimonials[current].text}&rdquo;
             </p>
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex gap-1 mb-2">
-                  {Array.from({ length: testimonials[current].rating }).map((_, i) => (
+                  {Array.from({ length: initialTestimonials[current].rating }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-gold text-gold" />
                   ))}
                 </div>
-                <p className="text-white font-heading font-bold">{testimonials[current].name}</p>
-                <p className="text-gold/60 text-sm">{testimonials[current].role}</p>
+                <p className="text-white font-heading font-bold">{initialTestimonials[current].name}</p>
+                <p className="text-gold/60 text-sm">{initialTestimonials[current].role}</p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={prev} className="p-2.5 rounded-xl border border-white/10 text-white/50 hover:text-gold hover:border-gold/30 transition-all">
@@ -96,7 +83,7 @@ export default function TestimonialsSection() {
 
           {/* Dots */}
           <div className="flex justify-center gap-2 mt-6">
-            {testimonials.map((_, i) => (
+            {initialTestimonials.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { setCurrent(i); setIsAutoPlaying(false); }}

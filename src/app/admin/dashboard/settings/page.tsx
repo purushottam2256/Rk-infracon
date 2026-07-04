@@ -18,6 +18,7 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 
 interface SettingItem {
   value: string;
@@ -128,11 +129,7 @@ export default function SettingsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-gold animate-spin" />
-      </div>
-    );
+    return <HouseLoader className="py-20" />;
   }
 
   return (

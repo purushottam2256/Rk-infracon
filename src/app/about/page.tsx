@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 import Link from "next/link";
 import {
   CheckCircle,
@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { PLACEHOLDER_IMAGES, COMPANY_INFO } from "@/lib/constants";
+import { PLACEHOLDER_IMAGES } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "About Us – RK Infracon",
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
     "Learn about RK Infracon, our mission, vision, and our founder's journey in the real estate industry. Trusted real estate developer in Hyderabad.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSiteSettings();
+
   return (
     <main>
       <Navbar />
@@ -57,7 +60,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div className="relative h-[520px] rounded-3xl overflow-hidden border border-cream-dark shadow-xl">
-              <Image
+              <ImageWithFallback
                 src={PLACEHOLDER_IMAGES.about}
                 alt="RK Infracon Office"
                 fill
@@ -69,7 +72,7 @@ export default function AboutPage() {
                 <div className="flex items-center justify-around">
                   <div className="text-center">
                     <div className="text-2xl font-heading font-bold text-gold">
-                      {COMPANY_INFO.experience}
+                      {settings.experience}
                     </div>
                     <div className="text-[10px] text-slate-medium uppercase tracking-wider font-semibold">
                       Years
@@ -78,7 +81,7 @@ export default function AboutPage() {
                   <div className="w-px h-10 bg-cream-dark" />
                   <div className="text-center">
                     <div className="text-2xl font-heading font-bold text-gold">
-                      {COMPANY_INFO.projectsDelivered}
+                      {settings.projectsDelivered}
                     </div>
                     <div className="text-[10px] text-slate-medium uppercase tracking-wider font-semibold">
                       Projects
@@ -87,7 +90,7 @@ export default function AboutPage() {
                   <div className="w-px h-10 bg-cream-dark" />
                   <div className="text-center">
                     <div className="text-2xl font-heading font-bold text-gold">
-                      {COMPANY_INFO.happyCustomers}
+                      {settings.happyCustomers}
                     </div>
                     <div className="text-[10px] text-slate-medium uppercase tracking-wider font-semibold">
                       Happy Families
@@ -142,7 +145,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-5 relative">
               <div className="relative h-[600px] w-full rounded-3xl overflow-hidden border border-cream-dark shadow-2xl">
-                <Image
+                <ImageWithFallback
                   src="/cmd-rama-krishna.jpg"
                   alt="Mr. Rama Krishna - CMD"
                   fill
@@ -315,7 +318,7 @@ export default function AboutPage() {
             Ready to Find Your Perfect Plot?
           </h2>
           <p className="text-navy/70 mb-8 max-w-xl mx-auto">
-            Join {COMPANY_INFO.happyCustomers} happy families who have already
+            Join {settings.happyCustomers} happy families who have already
             invested with RK Infracon. Contact us today to explore our premium
             properties and schedule a free site visit.
           </p>

@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ShieldCheck } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Privacy Policy – RK Infracon",
   description: "Privacy Policy and data protection guidelines for RK Infracon customers and website visitors.",
 };
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const settings = await getSiteSettings();
+
   return (
     <main>
       <Navbar />
@@ -38,7 +40,7 @@ export default function PrivacyPolicyPage() {
             
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">1. Introduction</h3>
             <p>
-              At <strong className="text-navy">{COMPANY_INFO.name}</strong>, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
+              At <strong className="text-navy">{settings.name}</strong>, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
             </p>
 
             <h3 className="font-heading text-2xl font-bold text-navy mt-8 mb-4">2. The Data We Collect About You</h3>
@@ -83,9 +85,9 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this privacy policy or our privacy practices, please contact us at:
             </p>
             <p className="bg-cream p-4 rounded-xl border border-cream-dark inline-block">
-              <strong className="text-navy">Email:</strong> <a href={`mailto:${COMPANY_INFO.email}`} className="text-gold hover:text-gold-dark">{COMPANY_INFO.email}</a><br />
-              <strong className="text-navy">Phone:</strong> <a href={`tel:${COMPANY_INFO.phone}`} className="text-gold hover:text-gold-dark">{COMPANY_INFO.phone}</a><br />
-              <strong className="text-navy mt-1 block">Address:</strong> {COMPANY_INFO.address}
+              <strong className="text-navy">Email:</strong> <a href={`mailto:${settings.email}`} className="text-gold hover:text-gold-dark">{settings.email}</a><br />
+              <strong className="text-navy">Phone:</strong> <a href={`tel:${settings.phone}`} className="text-gold hover:text-gold-dark">{settings.phone}</a><br />
+              <strong className="text-navy mt-1 block">Address:</strong> {settings.address}
             </p>
           </div>
         </div>

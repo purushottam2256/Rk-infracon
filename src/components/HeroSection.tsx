@@ -4,43 +4,45 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Play, ChevronDown, Download } from "lucide-react";
-import { PLACEHOLDER_IMAGES, COMPANY_INFO } from "@/lib/constants";
-
-const slides = [
-  {
-    image: PLACEHOLDER_IMAGES.hero,
-    tag: `${COMPANY_INFO.experience} Years of Excellence`,
-    title: "Your Dream Plot Awaits",
-    subtitle: "Premium DTCP Approved & RERA Registered Open Plots",
-  },
-  {
-    image: PLACEHOLDER_IMAGES.heroAlt,
-    tag: "Prime Locations",
-    title: "Invest in Your Future",
-    subtitle: "Prime Locations with World-Class Amenities",
-  },
-  {
-    image: PLACEHOLDER_IMAGES.plotAerial1,
-    tag: "Trusted Developers",
-    title: "Building Communities",
-    subtitle: "Transparent Transactions & Hassle-Free Documentation",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80",
-    tag: "High ROI",
-    title: "Secure Your Legacy",
-    subtitle: "High Returns on Investment in Rapidly Growing Corridors",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1448630360428-65456885c650?w=1920&q=80",
-    tag: "Premium Lifestyle",
-    title: "Experience Premium Living",
-    subtitle: "Modern Infrastructure Designed for Your Comfort",
-  },
-];
+import { PLACEHOLDER_IMAGES } from "@/lib/constants";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const settings = useSettings();
+
+  const slides = [
+    {
+      image: PLACEHOLDER_IMAGES.hero,
+      tag: `${settings.experience} Years of Excellence`,
+      title: "Your Dream Plot Awaits",
+      subtitle: "Premium DTCP Approved & RERA Registered Open Plots",
+    },
+    {
+      image: PLACEHOLDER_IMAGES.heroAlt,
+      tag: "Prime Locations",
+      title: "Invest in Your Future",
+      subtitle: "Prime Locations with World-Class Amenities",
+    },
+    {
+      image: PLACEHOLDER_IMAGES.plotAerial1,
+      tag: "Trusted Developers",
+      title: "Building Communities",
+      subtitle: "Transparent Transactions & Hassle-Free Documentation",
+    },
+    {
+      image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80",
+      tag: "High ROI",
+      title: "Secure Your Legacy",
+      subtitle: "High Returns on Investment in Rapidly Growing Corridors",
+    },
+    {
+      image: "https://images.unsplash.com/photo-1448630360428-65456885c650?w=1920&q=80",
+      tag: "Premium Lifestyle",
+      title: "Experience Premium Living",
+      subtitle: "Modern Infrastructure Designed for Your Comfort",
+    },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -141,9 +143,9 @@ export default function HeroSection() {
           style={{ animationDelay: "0.8s" }}
         >
           {[
-            { value: COMPANY_INFO.experience, label: "Years Experience" },
-            { value: COMPANY_INFO.happyCustomers, label: "Happy Customers" },
-            { value: COMPANY_INFO.projectsDelivered, label: "Projects Delivered" },
+            { value: settings.experience, label: "Years Experience" },
+            { value: settings.happyCustomers, label: "Happy Customers" },
+            { value: settings.projectsDelivered, label: "Projects Delivered" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-gradient-gold">

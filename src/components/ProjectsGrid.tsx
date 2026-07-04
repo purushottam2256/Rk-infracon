@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 import Link from "next/link";
 import {
   MapPin,
@@ -125,11 +125,11 @@ export default function ProjectsGrid({ initialProjects }: { initialProjects: any
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-navy/8 transition-all duration-500 transform hover:-translate-y-2 border border-cream-dark/50"
               >
                 <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src={project.thumbnail || project.hero_image}
+                  <ImageWithFallback
+                    src={project.thumbnail}
                     alt={project.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
@@ -188,12 +188,12 @@ export default function ProjectsGrid({ initialProjects }: { initialProjects: any
                 className="group flex flex-col sm:flex-row bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-navy/8 transition-all duration-500 border border-cream-dark/50"
               >
                 <div className="relative w-full sm:w-72 h-48 sm:h-auto shrink-0 overflow-hidden">
-                  <Image
+                  <ImageWithFallback
                     src={project.thumbnail || project.hero_image}
                     alt={project.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 100vw, 288px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, 300px"
                   />
                   <div className="absolute top-4 left-4">
                     <span

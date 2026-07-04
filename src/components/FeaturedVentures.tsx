@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 import Link from "next/link";
 import { MapPin, ArrowUpRight, TrendingUp, LayoutGrid } from "lucide-react";
 import { SEED_PROJECTS } from "@/lib/constants";
@@ -67,11 +67,11 @@ export default async function FeaturedVentures() {
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div className="relative h-56 overflow-hidden">
-                <Image
+                <ImageWithFallback
                   src={project.thumbnail}
                   alt={project.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />

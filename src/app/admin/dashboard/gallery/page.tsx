@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Link as LinkIcon,
 } from "lucide-react";
+import HouseLoader from "@/components/HouseLoader";
 
 interface GalleryImage {
   id: string;
@@ -176,9 +177,7 @@ export default function GalleryAdminPage() {
 
       {/* Gallery Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 text-gold animate-spin" />
-        </div>
+        <HouseLoader className="py-20" />
       ) : images.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-cream-dark">
           <ImageIcon className="w-16 h-16 text-slate-medium/20 mb-4" />

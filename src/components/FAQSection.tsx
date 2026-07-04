@@ -3,34 +3,13 @@
 import { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 
-const faqs = [
-  {
-    q: "Are your plots DTCP approved and RERA registered?",
-    a: "Yes, all our ventures are 100% DTCP Approved and RERA Registered, ensuring complete legal compliance and peace of mind for your investment.",
-  },
-  {
-    q: "What locations do you offer plots in?",
-    a: "We currently offer premium open plots in rapidly developing areas around Hyderabad including Shadnagar, Maheshwaram, Adibatla, and Shamshabad — all with excellent connectivity to ORR, NH-44, and the airport.",
-  },
-  {
-    q: "Can I visit the site before purchasing?",
-    a: "Absolutely! We encourage all prospective buyers to schedule a free site visit. Our team will personally guide you through the venture, show you the infrastructure, and answer all your questions on-site. Contact us to book a visit.",
-  },
-  {
-    q: "What amenities are included in your ventures?",
-    a: "Our ventures feature 40ft wide BT roads, underground drainage, 24/7 security with CCTV, street lighting, landscaped parks, children's play areas, compound walls, and avenue plantation — varying by project.",
-  },
-  {
-    q: "Do you work with external agents or brokers?",
-    a: "No. RK Infracon believes in direct customer relationships. We do not tie up with external agents or brokers, which means transparent pricing, no hidden commissions, and a hassle-free buying experience.",
-  },
-  {
-    q: "What is the process for purchasing a plot?",
-    a: "It's simple: (1) Schedule a site visit, (2) Choose your preferred plot, (3) Pay the booking amount, (4) Complete documentation and registration, (5) Get your registered sale deed. We assist you throughout the entire process.",
-  },
-];
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
 
-export default function FAQSection() {
+export default function FAQSection({ initialFaqs = [] }: { initialFaqs?: FAQ[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -50,7 +29,7 @@ export default function FAQSection() {
         </div>
 
         <div className="space-y-3">
-          {faqs.map((faq, i) => (
+          {initialFaqs.map((faq, i) => (
             <div
               key={i}
               className={`bg-white rounded-2xl border transition-all duration-300 ${
@@ -64,7 +43,7 @@ export default function FAQSection() {
                 className="w-full flex items-center justify-between px-6 py-5 text-left"
               >
                 <span className="font-semibold text-navy text-sm pr-4">
-                  {faq.q}
+                  {faq.question}
                 </span>
                 <ChevronDown
                   className={`w-5 h-5 text-gold shrink-0 transition-transform duration-300 ${
@@ -78,7 +57,7 @@ export default function FAQSection() {
                 }`}
               >
                 <p className="px-6 text-slate-medium text-sm leading-relaxed">
-                  {faq.a}
+                  {faq.answer}
                 </p>
               </div>
             </div>

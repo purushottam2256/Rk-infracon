@@ -24,10 +24,17 @@ export default function InquiryForm({
     preferredDate: "",
     preferredTime: "",
   });
+  const [userEditedMessage, setUserEditedMessage] = useState(false);
+
+  const isVisitBooking = formType === "visit-booking";
+  
+  const dynamicEnquiry = `Hi RK Infracon, I am ${formData.name || "[Name]"}, my mobile is ${formData.phone || "[Mobile]"}. I am interested in ${projectName === "General" ? "your projects" : projectName}.`;
+  const dynamicVisit = `Hi RK Infracon, I am ${formData.name || "[Name]"}, my mobile is ${formData.phone || "[Mobile]"}. I want to book a site visit for ${projectName === "General" ? "your projects" : projectName}.`;
+  
+  const currentMessage = userEditedMessage ? formData.message : (isVisitBooking ? dynamicVisit : dynamicEnquiry);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const isVisitBooking = formType === "visit-booking";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,6 +46,7 @@ export default function InquiryForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          message: currentMessage,
           projectInterest: projectName,
           source: "website",
           type: formType,
@@ -52,6 +60,7 @@ export default function InquiryForm({
 
       setStatus("success");
       setFormData({ name: "", email: "", phone: "", message: "", preferredDate: "", preferredTime: "" });
+      setUserEditedMessage(false);
       setTimeout(() => setStatus("idle"), 5000);
     } catch (err) {
       setStatus("error");
@@ -166,11 +175,14 @@ export default function InquiryForm({
       {variant === "default" && (
         <div>
           <textarea
-            placeholder={isVisitBooking ? "Any special requests? (Optional)" : "Your Message (Optional)"}
+            placeholder={isVisitBooking ? "Any special requests? (Optional)" : "Your Message"}
             rows={4}
             id={isVisitBooking ? "visit-message" : "inquiry-message"}
-            value={formData.message}
-            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            value={currentMessage}
+            onChange={(e) => {
+              setUserEditedMessage(true);
+              setFormData({ ...formData, message: e.target.value });
+            }}
             className="w-full px-4 py-3.5 rounded-xl bg-cream border border-cream-dark text-navy text-sm placeholder:text-slate-medium/50 focus:border-gold/40 focus:ring-2 focus:ring-gold/10 transition-all outline-none resize-none"
           />
         </div>
