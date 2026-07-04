@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 };
 
 import FloatingContact from "@/components/FloatingContact";
+import VisitorTracker from "@/components/VisitorTracker";
 
 export default function RootLayout({
   children,
@@ -49,6 +50,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <FloatingContact />
+        <VisitorTracker />
       </body>
     </html>
   );

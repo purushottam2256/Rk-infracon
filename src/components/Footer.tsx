@@ -12,9 +12,31 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { NAV_LINKS, COMPANY_INFO } from "@/lib/constants";
+import { createAdminClient } from "@/lib/supabase/server";
 
-export default function Footer() {
+async function getProjectsForFooter() {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from("projects")
+      .select("title, slug")
+      .order("created_at", { ascending: false })
+      .limit(6);
+    if (data && data.length > 0) return data;
+    throw new Error("No data");
+  } catch {
+    return [
+      { title: "RK Green Valley", slug: "rk-green-valley" },
+      { title: "RK Paradise Enclave", slug: "rk-paradise-enclave" },
+      { title: "RK Sunrise City", slug: "rk-sunrise-city" },
+      { title: "RK Heritage Heights", slug: "rk-heritage-heights" },
+    ];
+  }
+}
+
+export default async function Footer() {
   const currentYear = new Date().getFullYear();
+  const projects = await getProjectsForFooter();
 
   return (
     <footer className="bg-gradient-navy text-white relative overflow-hidden">
@@ -127,26 +149,21 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Projects */}
+          {/* Projects — Dynamic */}
           <div>
             <h4 className="font-heading font-semibold text-base mb-5 flex items-center gap-2">
               <div className="w-1 h-5 bg-gold rounded-full" />
               Our Projects
             </h4>
             <ul className="space-y-2.5">
-              {[
-                { name: "RK Green Valley", slug: "rk-green-valley" },
-                { name: "RK Paradise Enclave", slug: "rk-paradise-enclave" },
-                { name: "RK Sunrise City", slug: "rk-sunrise-city" },
-                { name: "RK Heritage Heights", slug: "rk-heritage-heights" },
-              ].map((project) => (
+              {projects.map((project) => (
                 <li key={project.slug}>
                   <Link
                     href={`/projects/${project.slug}`}
                     className="text-white/50 hover:text-gold text-sm transition-all duration-200 flex items-center gap-2 group"
                   >
                     <ChevronRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
-                    {project.name}
+                    {project.title}
                   </Link>
                 </li>
               ))}

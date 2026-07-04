@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Phone, Mail, MapPin, Clock, MessageSquare } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageSquare, CalendarDays } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import InquiryForm from "@/components/InquiryForm";
+import ContactFormsTabs from "@/components/ContactFormsTabs";
 import { COMPANY_INFO } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -106,17 +106,9 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Contact Form */}
+            {/* Forms */}
             <div className="lg:col-span-3">
-              <div className="bg-white rounded-2xl p-8 border border-cream-dark shadow-sm">
-                <h3 className="font-heading text-xl font-bold text-navy mb-1">
-                  Send Us a Message
-                </h3>
-                <p className="text-slate-medium text-sm mb-6">
-                  Fill in the form below and our team will reach out to you shortly.
-                </p>
-                <InquiryForm variant="default" />
-              </div>
+              <ContactFormsTabs />
             </div>
           </div>
         </div>

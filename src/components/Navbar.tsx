@@ -6,10 +6,16 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Phone, ChevronDown, Settings } from "lucide-react";
 import { NAV_LINKS, COMPANY_INFO } from "@/lib/constants";
 
+interface NavProject {
+  title: string;
+  slug: string;
+}
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const [projects, setProjects] = useState<NavProject[]>([]);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -25,10 +31,42 @@ export default function Navbar() {
     setProjectsOpen(false);
   }, [pathname]);
 
+  // Fetch projects dynamically for the dropdown
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch("/api/projects");
+        if (res.ok) {
+          const data = await res.json();
+          const projectList = (data.projects || data || []).map((p: { title: string; slug: string }) => ({
+            title: p.title,
+            slug: p.slug,
+          }));
+          if (projectList.length > 0) {
+            setProjects(projectList);
+            return;
+          }
+        }
+      } catch {
+        // Fallback to defaults
+      }
+      // Fallback
+      setProjects([
+        { title: "RK Green Valley", slug: "rk-green-valley" },
+        { title: "RK Paradise Enclave", slug: "rk-paradise-enclave" },
+        { title: "RK Sunrise City", slug: "rk-sunrise-city" },
+        { title: "RK Heritage Heights", slug: "rk-heritage-heights" },
+      ]);
+    };
+    fetchProjects();
+  }, []);
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
+
+  const formattedPhone = COMPANY_INFO.phone.replace(/(\d{5})(\d{5})/, "$1 $2");
 
   return (
     <header
@@ -82,18 +120,13 @@ export default function Navbar() {
                   <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
                     <div className="bg-navy-light border border-gold/10 rounded-xl shadow-2xl overflow-hidden min-w-[220px]">
                       <div className="p-2">
-                        {[
-                          { name: "RK Green Valley", slug: "rk-green-valley" },
-                          { name: "RK Paradise Enclave", slug: "rk-paradise-enclave" },
-                          { name: "RK Sunrise City", slug: "rk-sunrise-city" },
-                          { name: "RK Heritage Heights", slug: "rk-heritage-heights" },
-                        ].map((project) => (
+                        {projects.map((project) => (
                           <Link
                             key={project.slug}
                             href={`/projects/${project.slug}`}
                             className="block px-4 py-2.5 text-sm text-white/70 hover:text-gold hover:bg-gold/5 rounded-lg transition-all duration-200"
                           >
-                            {project.name}
+                            {project.title}
                           </Link>
                         ))}
                         <div className="border-t border-gold/10 mt-1 pt-1">
@@ -114,21 +147,14 @@ export default function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              href="/admin"
-              id="nav-admin-panel"
-              className="flex items-center gap-2 text-white/50 hover:text-gold px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/5"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Admin</span>
-            </Link>
+
             <a
               href={`tel:${COMPANY_INFO.phone}`}
               id="nav-call-now"
               className="group flex items-center gap-2.5 bg-gradient-gold text-navy px-5 py-2.5 rounded-full font-semibold text-sm hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105"
             >
               <Phone className="w-4 h-4 animate-pulse-gold rounded-full" />
-              <span>Call Now</span>
+              <span>{formattedPhone}</span>
             </a>
           </div>
 
@@ -179,19 +205,14 @@ export default function Navbar() {
                 </Link>
                 {link.label === "Projects" && projectsOpen && (
                   <div className="ml-4 mt-1 space-y-1 border-l-2 border-gold/20 pl-4">
-                    {[
-                      { name: "RK Green Valley", slug: "rk-green-valley" },
-                      { name: "RK Paradise Enclave", slug: "rk-paradise-enclave" },
-                      { name: "RK Sunrise City", slug: "rk-sunrise-city" },
-                      { name: "RK Heritage Heights", slug: "rk-heritage-heights" },
-                    ].map((project) => (
+                    {projects.map((project) => (
                       <Link
                         key={project.slug}
                         href={`/projects/${project.slug}`}
                         className="block px-3 py-2 text-sm text-white/60 hover:text-gold rounded-lg transition-all"
                         onClick={() => setIsOpen(false)}
                       >
-                        {project.name}
+                        {project.title}
                       </Link>
                     ))}
                     <Link
@@ -206,20 +227,13 @@ export default function Navbar() {
               </div>
             ))}
             <div className="pt-2 border-t border-gold/10 space-y-2">
-              <Link
-                href="/admin"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 border border-gold/30 text-gold px-5 py-3 rounded-xl font-semibold text-sm hover:bg-gold/10 transition-all"
-              >
-                <Settings className="w-4 h-4" />
-                Admin Panel
-              </Link>
+
               <a
                 href={`tel:${COMPANY_INFO.phone}`}
                 className="flex items-center justify-center gap-2 bg-gradient-gold text-navy px-5 py-3 rounded-xl font-semibold text-sm"
               >
                 <Phone className="w-4 h-4" />
-                Call Now
+                {formattedPhone}
               </a>
             </div>
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ImageIcon, Play, X } from "lucide-react";
+import { ImageIcon, Play, X, Loader2 } from "lucide-react";
 import { PLACEHOLDER_IMAGES } from "@/lib/constants";
 
 const tabs = [
@@ -10,7 +10,8 @@ const tabs = [
   { id: "videos", label: "Videos", icon: Play },
 ];
 
-const galleryImages = [
+// Fallback gallery images (used only if no images in DB)
+const fallbackImages = [
   { src: PLACEHOLDER_IMAGES.plotLandscape1, alt: "RK Green Valley - Landscape", category: "RK Green Valley" },
   { src: PLACEHOLDER_IMAGES.plotAerial1, alt: "RK Green Valley - Aerial", category: "RK Green Valley" },
   { src: PLACEHOLDER_IMAGES.gallery1, alt: "Project Infrastructure", category: "Infrastructure" },
@@ -32,9 +33,43 @@ const videos = [
   { title: "Customer Testimonials", thumbnail: PLACEHOLDER_IMAGES.gallery3 },
 ];
 
+interface GalleryImage {
+  src: string;
+  alt: string;
+  category: string;
+}
+
 export default function GalleryContent() {
   const [activeTab, setActiveTab] = useState("images");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(fallbackImages);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch("/api/gallery");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.images && data.images.length > 0) {
+            setGalleryImages(
+              data.images.map((img: { url: string; alt: string; key: string }) => ({
+                src: img.url,
+                alt: img.alt || "Gallery Image",
+                category: "Gallery",
+              }))
+            );
+          }
+          // If no images in DB, keep fallback
+        }
+      } catch {
+        // Keep fallback images
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGallery();
+  }, []);
 
   return (
     <section className="py-16 bg-cream">
@@ -59,22 +94,28 @@ export default function GalleryContent() {
 
         {/* Images Grid */}
         {activeTab === "images" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {galleryImages.map((img, i) => (
-              <div
-                key={i}
-                onClick={() => setLightboxIndex(i)}
-                className="relative h-56 rounded-2xl overflow-hidden cursor-pointer group"
-              >
-                <Image src={img.src} alt={img.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="text-white text-sm font-medium">{img.alt}</p>
-                  <p className="text-gold/70 text-xs">{img.category}</p>
+          loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 text-gold animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {galleryImages.map((img, i) => (
+                <div
+                  key={i}
+                  onClick={() => setLightboxIndex(i)}
+                  className="relative h-56 rounded-2xl overflow-hidden cursor-pointer group"
+                >
+                  <Image src={img.src} alt={img.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-white text-sm font-medium">{img.alt}</p>
+                    <p className="text-gold/70 text-xs">{img.category}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )
         )}
 
         {/* Videos Grid */}

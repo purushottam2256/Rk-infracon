@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -13,14 +13,20 @@ import {
   X,
   ChevronRight,
   Home,
+  Settings,
+  BarChart3,
+  Image,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const sidebarLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/dashboard/projects", label: "Projects", icon: Building2 },
+  { href: "/admin/dashboard/gallery", label: "Gallery", icon: Image },
   { href: "/admin/dashboard/images", label: "Site Images", icon: ImageIcon },
   { href: "/admin/dashboard/leads", label: "Leads", icon: Users },
+  { href: "/admin/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/dashboard/settings", label: "Site Settings", icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -38,6 +44,33 @@ export default function DashboardLayout({
     router.push("/admin");
     router.refresh();
   };
+
+  // High security: strict client-side auth verification
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const supabase = createClient();
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error || !session) {
+        // If not authenticated or error, force redirect to login
+        router.replace("/admin");
+      }
+    };
+    
+    verifyAuth();
+    
+    // Set up real-time auth listener to log out if session expires
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        router.replace("/admin");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-cream flex">
@@ -73,7 +106,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {sidebarLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== "/admin/dashboard" && pathname.startsWith(link.href));
             return (

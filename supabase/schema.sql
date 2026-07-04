@@ -1,5 +1,6 @@
 -- ============================================
 -- RK Infracon - Supabase Database Schema
+-- COMPLETE SCHEMA (includes all tables)
 -- Run this in the Supabase SQL Editor
 -- ============================================
 
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS projects (
 );
 
 -- ============================================
--- 2. LEADS TABLE
+-- 2. LEADS TABLE (with type & updated statuses)
 -- ============================================
 CREATE TABLE IF NOT EXISTS leads (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -75,7 +76,10 @@ CREATE TABLE IF NOT EXISTS leads (
   message TEXT DEFAULT '',
   project_interest TEXT DEFAULT 'General',
   source TEXT DEFAULT 'website',
-  status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'qualified', 'closed')),
+  type TEXT NOT NULL DEFAULT 'enquiry' CHECK (type IN ('enquiry', 'visit-booking')),
+  preferred_date TEXT DEFAULT '',
+  preferred_time TEXT DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'in-progress', 'completed')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -90,12 +94,51 @@ CREATE TABLE IF NOT EXISTS site_images (
   storage_path TEXT DEFAULT '',
   alt TEXT DEFAULT '',
   section TEXT NOT NULL,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================
--- 4. ROW LEVEL SECURITY (RLS) Policies
+-- 4. SITE SETTINGS TABLE (editable content)
+-- ============================================
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT '',
+  label TEXT DEFAULT '',
+  category TEXT DEFAULT 'general',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 5. SITE VISITS TABLE (visitor tracking)
+-- ============================================
+CREATE TABLE IF NOT EXISTS site_visits (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  visitor_id TEXT NOT NULL,
+  page TEXT NOT NULL DEFAULT '/',
+  referrer TEXT DEFAULT '',
+  user_agent TEXT DEFAULT '',
+  device_type TEXT DEFAULT 'desktop',
+  browser TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 6. VISITOR STATS TABLE (daily aggregates)
+-- ============================================
+CREATE TABLE IF NOT EXISTS visitor_stats (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  date DATE NOT NULL UNIQUE,
+  unique_visitors INTEGER DEFAULT 0,
+  page_views INTEGER DEFAULT 0,
+  top_pages JSONB DEFAULT '{}',
+  device_breakdown JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 7. ROW LEVEL SECURITY (RLS) Policies
 -- ============================================
 
 -- Projects: Public read, no public write
@@ -119,19 +162,40 @@ CREATE POLICY "Site images are viewable by everyone"
   ON site_images FOR SELECT
   USING (true);
 
+-- Site Settings: Public read, no public write
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Site settings are viewable by everyone"
+  ON site_settings FOR SELECT
+  USING (true);
+
+-- Site Visits: Public insert (tracking), no public read
+ALTER TABLE site_visits ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can record a visit"
+  ON site_visits FOR INSERT
+  WITH CHECK (true);
+
+-- Visitor Stats: No public access (admin only via service role)
+ALTER TABLE visitor_stats ENABLE ROW LEVEL SECURITY;
+
 -- ============================================
--- 5. INDEXES
+-- 8. INDEXES
 -- ============================================
 CREATE INDEX IF NOT EXISTS idx_projects_slug ON projects(slug);
 CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
 CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+CREATE INDEX IF NOT EXISTS idx_leads_type ON leads(type);
 CREATE INDEX IF NOT EXISTS idx_leads_created_at ON leads(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_site_images_key ON site_images(key);
 CREATE INDEX IF NOT EXISTS idx_site_images_section ON site_images(section);
+CREATE INDEX IF NOT EXISTS idx_site_visits_created_at ON site_visits(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_visits_visitor_id ON site_visits(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_visitor_stats_date ON visitor_stats(date DESC);
 
 -- ============================================
--- 6. AUTO-UPDATE updated_at TRIGGER
+-- 9. AUTO-UPDATE updated_at TRIGGER
 -- ============================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -153,8 +217,12 @@ CREATE TRIGGER update_site_images_updated_at
   BEFORE UPDATE ON site_images
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+CREATE TRIGGER update_site_settings_updated_at
+  BEFORE UPDATE ON site_settings
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- ============================================
--- 7. SEED DATA - Projects
+-- 10. SEED DATA - Projects
 -- ============================================
 INSERT INTO projects (title, slug, location, description, short_description, price, price_range, plot_sizes, total_area, total_plots, status, featured, thumbnail, hero_image, gallery_images, layout_image, amenities, highlights, lat, lng)
 VALUES
@@ -250,4 +318,20 @@ INSERT INTO site_images (key, url, section, alt) VALUES
   ('hero-secondary', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80', 'hero', 'Hero Secondary'),
   ('about-main', 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80', 'about', 'About Section'),
   ('contact-main', 'https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=1200&q=80', 'contact', 'Contact Section')
+ON CONFLICT (key) DO NOTHING;
+
+-- Seed default site settings
+INSERT INTO site_settings (key, value, label, category) VALUES
+  ('phone', '8499900100', 'Phone Number', 'contact'),
+  ('email', 'info@rkinfracon.in', 'Email Address', 'contact'),
+  ('address', 'Uppal, Hyderabad, Telangana, India', 'Office Address', 'contact'),
+  ('working_hours', 'Mon - Sat: 9:30 AM to 6:30 PM', 'Working Hours', 'contact'),
+  ('tagline', 'Trust In Us', 'Company Tagline', 'company'),
+  ('experience', '15+', 'Years of Experience', 'company'),
+  ('happy_customers', '2000+', 'Happy Customers', 'company'),
+  ('projects_delivered', '15+', 'Projects Delivered', 'company'),
+  ('facebook_url', 'https://facebook.com/rkinfracon', 'Facebook URL', 'social'),
+  ('instagram_url', 'https://instagram.com/rkinfracon', 'Instagram URL', 'social'),
+  ('youtube_url', 'https://youtube.com/@rkinfracon', 'YouTube URL', 'social'),
+  ('linkedin_url', 'https://linkedin.com/company/rkinfracon', 'LinkedIn URL', 'social')
 ON CONFLICT (key) DO NOTHING;

@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import SearchFilter from "@/components/SearchFilter";
 import FeaturedVentures from "@/components/FeaturedVentures";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -13,7 +12,6 @@ export default function HomePage() {
     <main>
       <Navbar />
       <HeroSection />
-      <SearchFilter />
       <FeaturedVentures />
       <CTASection />
       <WhyChooseUs />

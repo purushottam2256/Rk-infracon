@@ -244,10 +244,10 @@ export const COMPANY_INFO = {
   phone: "8499900100",
   email: "info@rkinfracon.in",
   address: "Uppal, Hyderabad, Telangana, India",
-  workingHours: "Mon - Sat: 9:30 AM to 6:30 PM",
+  workingHours: "Mon - Sat: 9:30 AM to 8:30 PM",
   founded: "2018",
-  experience: "7+",
-  happyCustomers: "1200+",
+  experience: "15+",
+  happyCustomers: "2000+",
   projectsDelivered: "15+",
   socialLinks: {
     facebook: "https://facebook.com/rkinfracon",

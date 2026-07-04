@@ -11,9 +11,10 @@ interface Lead {
   email: string;
   phone: string;
   message: string;
-  projectInterest: string;
+  project_interest: string;
   status: string;
-  createdAt: string;
+  type: string;
+  created_at: string;
 }
 
 const quickActions = [
@@ -36,10 +37,9 @@ const quickActions = [
 ];
 
 const statusColors: Record<string, string> = {
-  new: "bg-blue-500/10 text-blue-500",
-  contacted: "bg-amber-500/10 text-amber-500",
-  qualified: "bg-emerald-500/10 text-emerald-500",
-  closed: "bg-slate-500/10 text-slate-500",
+  pending: "bg-amber-500/10 text-amber-600",
+  "in-progress": "bg-blue-500/10 text-blue-500",
+  completed: "bg-emerald-500/10 text-emerald-600",
 };
 
 export default function DashboardPage() {
@@ -177,12 +177,12 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${statusColors[lead.status] || statusColors.new}`}>
-                        {lead.status}
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${statusColors[lead.status] || statusColors.pending}`}>
+                        {lead.status.replace("-", " ")}
                       </span>
                       <span className="text-xs text-slate-medium flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5" />
-                        {formatDate(lead.createdAt)}
+                        {formatDate(lead.created_at)}
                       </span>
                     </div>
                   </div>
