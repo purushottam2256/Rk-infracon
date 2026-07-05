@@ -192,22 +192,7 @@ export default function ImageManagerPage() {
         </div>
       </div>
 
-      {/* Section Filter */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {sections.map((section) => (
-          <button
-            key={section}
-            onClick={() => setActiveSection(section)}
-            className={`px-4 py-2 rounded-full text-xs font-semibold capitalize transition-all duration-300 ${
-              activeSection === section
-                ? "bg-navy text-white shadow-lg"
-                : "bg-white text-slate-medium hover:bg-cream-dark border border-cream-dark"
-            }`}
-          >
-            {section === "All" ? "All Sections" : section}
-          </button>
-        ))}
-      </div>
+      {/* Section Filter removed per request to merge everything */}
 
       {/* Image Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

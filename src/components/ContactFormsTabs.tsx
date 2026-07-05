@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { MessageSquare, CalendarDays } from "lucide-react";
 import InquiryForm from "@/components/InquiryForm";
 
 export default function ContactFormsTabs() {
-  const [activeTab, setActiveTab] = useState<"enquiry" | "visit">("enquiry");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") === "visit" ? "visit" : "enquiry";
+  const [activeTab, setActiveTab] = useState<"enquiry" | "visit">(initialTab);
+
+  useEffect(() => {
+    if (searchParams.get("tab") === "visit") {
+      setActiveTab("visit");
+    }
+  }, [searchParams]);
 
   return (
     <div className="bg-white rounded-2xl border border-cream-dark shadow-sm overflow-hidden">

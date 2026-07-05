@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ImageIcon, Users, TrendingUp, ArrowUpRight, Building2, Calendar, Mail, Loader2, Sparkles, Phone } from "lucide-react";
 import HouseLoader from "@/components/HouseLoader";
-import { COMPANY_INFO } from "@/lib/constants";
+import { useSettings } from "@/context/SettingsContext";
 
 interface Lead {
   id: string;
@@ -48,6 +48,9 @@ export default function DashboardPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [totalLeads, setTotalLeads] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [totalProjects, setTotalProjects] = useState(0);
+  const [ongoingProjects, setOngoingProjects] = useState(0);
+  const settings = useSettings();
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -58,11 +61,20 @@ export default function DashboardPage() {
 
   const fetchDashboardData = useCallback(async () => {
     try {
-      const res = await fetch("/api/leads?page=1&limit=5");
-      if (res.ok) {
-        const data = await res.json();
+      const [leadsRes, projectsRes] = await Promise.all([
+        fetch("/api/leads?page=1&limit=5&status=active"),
+        fetch("/api/projects")
+      ]);
+      if (leadsRes.ok) {
+        const data = await leadsRes.json();
         setLeads(data.leads || []);
         setTotalLeads(data.pagination?.total || 0);
+      }
+      if (projectsRes.ok) {
+        const data = await projectsRes.json();
+        const projectsList = data.projects || [];
+        setTotalProjects(projectsList.length);
+        setOngoingProjects(projectsList.filter((p: any) => p.status === "ongoing").length);
       }
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
@@ -101,7 +113,7 @@ export default function DashboardPage() {
               {greeting}, Admin 👋
             </h1>
             <p className="text-white/70 max-w-lg">
-              Here is what&apos;s happening across the {COMPANY_INFO.name} platform today. Manage your properties and customer inquiries effortlessly.
+              Here is what&apos;s happening across the {settings.name} platform today. Manage your properties and customer inquiries effortlessly.
             </p>
           </div>
         </div>
@@ -110,10 +122,10 @@ export default function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
-          { label: "Total Properties", value: "4", icon: Building2, change: "+1 this month", delay: "0s" },
+          { label: "Total Properties", value: loading ? "..." : totalProjects.toString(), icon: Building2, change: "Real-time count", delay: "0s" },
           { label: "Active Inquiries", value: loading ? "..." : totalLeads.toString(), icon: Users, change: "Real-time from forms", delay: "0.1s" },
-          { label: "Ongoing Ventures", value: "2", icon: TrendingUp, change: "Active Development", delay: "0.2s" },
-          { label: "Happy Customers", value: COMPANY_INFO.happyCustomers, icon: Sparkles, change: "Growing steadily", delay: "0.3s" },
+          { label: "Ongoing Ventures", value: loading ? "..." : ongoingProjects.toString(), icon: TrendingUp, change: "Active Development", delay: "0.2s" },
+          { label: "Happy Customers", value: settings.happyCustomers, icon: Sparkles, change: "Growing steadily", delay: "0.3s" },
         ].map((stat) => (
           <div
             key={stat.label}
@@ -168,7 +180,14 @@ export default function DashboardPage() {
                         {lead.name.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-navy">{lead.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-navy">{lead.name}</h3>
+                          {lead.type === 'visit-booking' && lead.status === 'pending' && (
+                            <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 text-[10px] font-bold uppercase animate-pulse">
+                              Urgent: Visit Request
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-3 text-xs text-slate-medium mt-1">
                           <span className="flex items-center gap-1"><Mail className="w-3 h-3"/> {lead.email}</span>
                           <span className="hidden sm:flex items-center gap-1"><Phone className="w-3 h-3"/> {lead.phone}</span>

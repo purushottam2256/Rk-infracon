@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 const STORAGE_BUCKET = "site-images";
 
@@ -60,6 +61,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) throw error;
+    revalidatePath("/");
+    revalidatePath("/projects");
     return NextResponse.json({ success: true, project: data });
   } catch (error) {
     console.error("Project update error:", error);
@@ -114,6 +117,8 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     const { error } = await adminClient.from("projects").delete().eq("id", id);
     if (error) throw error;
 
+    revalidatePath("/");
+    revalidatePath("/projects");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Project delete error:", error);

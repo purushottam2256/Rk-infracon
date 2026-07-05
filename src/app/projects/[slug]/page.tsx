@@ -10,8 +10,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import InquiryForm from "@/components/InquiryForm";
 import ProjectGallery from "@/components/ProjectGallery";
-import { COMPANY_INFO, SEED_PROJECTS } from "@/lib/constants";
+import { SEED_PROJECTS } from "@/lib/constants";
 import { createAdminClient } from "@/lib/supabase/server";
+import { getSiteSettings } from "@/lib/settings";
 
 // Revalidate every 60 seconds so admin edits appear quickly
 export const revalidate = 60;
@@ -72,7 +73,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     "sold-out": { color: "bg-red-500", label: "Sold Out" },
   };
 
-  const whatsappUrl = `https://wa.me/91${COMPANY_INFO.phone.replace(/[^0-9]/g, "")}?text=Hello%20RK%20Infracon%2C%0AI%20am%20interested%20in%20${encodeURIComponent(project.title)}.%20Please%20share%20more%20details.`;
+  const settings = await getSiteSettings();
+
+  const whatsappUrl = `https://wa.me/91${settings.phone.replace(/[^0-9]/g, "")}?text=Hello%20RK%20Infracon%2C%0AI%20am%20interested%20in%20${encodeURIComponent(project.title)}.%20Please%20share%20more%20details.`;
 
   return (
     <main>
@@ -209,7 +212,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                 <InquiryForm projectName={project.title} variant="compact" />
 
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  <a href={`tel:${COMPANY_INFO.phone}`} className="flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-navy text-navy font-semibold text-xs hover:bg-navy hover:text-white transition-all">
+                  <a href={`tel:${settings.phone}`} className="flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-navy text-navy font-semibold text-xs hover:bg-navy hover:text-white transition-all">
                     <Phone className="w-4 h-4" /> Call Now
                   </a>
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25D366] text-white font-semibold text-xs hover:bg-[#1da851] transition-all">

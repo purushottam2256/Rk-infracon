@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 // GET — Public: fetch all settings as a key-value object
 export async function GET() {
@@ -67,6 +68,9 @@ export async function PUT(request: NextRequest) {
     if (errors.length > 0) {
       return NextResponse.json({ error: errors.join("; ") }, { status: 500 });
     }
+
+    // Bust the Next.js cache so all pages re-render with fresh settings
+    revalidatePath("/", "layout");
 
     return NextResponse.json({ success: true, message: "Settings updated" });
   } catch (error) {

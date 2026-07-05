@@ -1,5 +1,6 @@
 import { NextResponse } from "next/dist/server/web/spec-extension/response";
 import { createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
@@ -21,6 +22,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       
     if (error) throw error;
     
+    revalidatePath("/");
     return NextResponse.json({ faq: data });
   } catch (error) {
     console.error("FAQ PUT error:", error);
@@ -36,6 +38,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     const { error } = await supabase.from("faqs").delete().eq("id", id);
     if (error) throw error;
     
+    revalidatePath("/");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("FAQ DELETE error:", error);

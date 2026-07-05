@@ -1,5 +1,6 @@
 import { NextResponse } from "next/dist/server/web/spec-extension/response";
 import { createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
   try {
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
       
     if (error) throw error;
     
+    revalidatePath("/");
     return NextResponse.json({ faq: data });
   } catch (error) {
     console.error("FAQs POST error:", error);

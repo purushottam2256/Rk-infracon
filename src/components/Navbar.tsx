@@ -72,27 +72,27 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-navy/95 shadow-2xl shadow-navy/20 py-2 backdrop-blur-md"
-          : "bg-navy/90 shadow-lg py-4 backdrop-blur-sm"
+          ? "bg-navy shadow-lg py-2"
+          : "bg-navy shadow-md py-3"
       }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/#hero-section" className="flex items-center gap-2 sm:gap-4 group" id="nav-logo">
+          <Link href="/#hero-section" className="flex items-center gap-3 group" id="nav-logo">
             <div className="relative shrink-0">
-              <div className="w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center transform transition-transform group-hover:scale-105 shadow-lg rounded-full overflow-hidden">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center transform transition-transform group-hover:scale-105 bg-white shadow-lg rounded-full overflow-hidden p-1">
                 <img src="/logo.png" alt="RK Infracon Logo" className="w-full h-full object-contain" />
               </div>
               <div className="absolute -inset-1 sm:-inset-1.5 bg-gold/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-white font-heading font-extrabold text-lg sm:text-3xl tracking-wider sm:tracking-widest leading-none drop-shadow-md truncate">
+              <span className="text-white font-heading font-extrabold text-lg sm:text-2xl tracking-widest leading-none drop-shadow-md truncate">
                 RK INFRACON
               </span>
-              <span className="text-gold/80 text-[8px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.25em] font-bold mt-1 sm:mt-1.5 drop-shadow-sm truncate">
+              <span className="text-gold/80 text-[9px] sm:text-[11px] uppercase tracking-[0.2em] font-bold mt-1 drop-shadow-sm truncate">
                 {settings.tagline}
               </span>
             </div>

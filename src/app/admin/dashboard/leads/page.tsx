@@ -66,7 +66,7 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [typeFilter, setTypeFilter] = useState("all");
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -196,7 +196,7 @@ export default function LeadsPage() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Filter className="w-4 h-4 text-slate-medium" />
-          {["all", "pending", "in-progress", "completed"].map((status) => (
+          {["active", "all", "pending", "in-progress", "completed"].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
@@ -206,7 +206,7 @@ export default function LeadsPage() {
                   : "bg-white text-slate-medium border border-cream-dark hover:bg-cream-dark"
               }`}
             >
-              {status === "all" ? "All" : status.replace("-", " ")}
+              {status === "active" ? "Active (Pending & In Progress)" : status === "all" ? "All" : status.replace("-", " ")}
             </button>
           ))}
           <div className="w-px h-6 bg-cream-dark mx-1" />
@@ -375,41 +375,84 @@ export default function LeadsPage() {
                       <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-cream-dark">
                         <a
                           href={`tel:${lead.phone}`}
+                          onClick={() => {
+                            if (lead.status === "pending") handleStatusChange(lead.id, "in-progress");
+                          }}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 text-xs font-semibold hover:bg-emerald-500/20 transition-all"
                         >
                           <Phone className="w-3.5 h-3.5" />
                           Call
                         </a>
                         <a
-                          href={`mailto:${lead.email}`}
+                          href={`mailto:${lead.email}?subject=Thank%20you%20for%20approaching%20RK%20Infracon&body=Hello%20${lead.name},%0D%0A%0D%0AThank%20you%20for%20approaching%20us.%20We%20received%20your%20inquiry%20regarding%20${lead.project_interest || "our projects"}.`}
+                          onClick={() => {
+                            if (lead.status === "pending") handleStatusChange(lead.id, "in-progress");
+                          }}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-semibold hover:bg-blue-500/20 transition-all"
                         >
                           <Mail className="w-3.5 h-3.5" />
                           Email
                         </a>
                         <a
-                          href={`https://wa.me/91${lead.phone.replace(/[^0-9]/g, "")}?text=Hello ${lead.name}, this is RK Infracon. We received your inquiry regarding ${lead.project_interest || "our projects"}.`}
+                          href={`https://wa.me/91${lead.phone.replace(/[^0-9]/g, "")}?text=Hello ${lead.name}, thank you for approaching us! This is RK Infracon. We received your inquiry regarding ${lead.project_interest || "our projects"}.`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => {
+                            if (lead.status === "pending") handleStatusChange(lead.id, "in-progress");
+                          }}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-500/10 text-green-600 text-xs font-semibold hover:bg-green-500/20 transition-all"
                         >
                           <MessageSquare className="w-3.5 h-3.5" />
                           WhatsApp
                         </a>
-                        {["pending", "in-progress", "completed"].map((s) => (
+                        <div className="w-px h-6 bg-cream-dark mx-1 self-center" />
+                        {lead.type === 'visit-booking' && lead.status === 'pending' && (
                           <button
-                            key={s}
-                            onClick={() => handleStatusChange(lead.id, s)}
-                            disabled={lead.status === s}
-                            className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all capitalize ${
-                              lead.status === s
-                                ? "bg-navy text-white cursor-default"
-                                : "bg-cream text-navy hover:bg-cream-dark"
-                            }`}
+                            onClick={async () => {
+                              setUpdatingStatus(lead.id);
+                              try {
+                                const res = await fetch("/api/leads/approve", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ id: lead.id }),
+                                });
+                                if (!res.ok) throw new Error("Failed to approve");
+                                setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, status: "in-progress" } : l));
+                                setSuccess("Visit approved and reminder sent!");
+                                setTimeout(() => setSuccess(""), 3000);
+                              } catch {
+                                setError("Failed to approve visit.");
+                              } finally {
+                                setUpdatingStatus(null);
+                              }
+                            }}
+                            disabled={updatingStatus === lead.id}
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500/10 text-amber-600 text-xs font-semibold hover:bg-amber-500/20 transition-all"
                           >
-                            {s.replace("-", " ")}
+                            {updatingStatus === lead.id ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <CalendarDays className="w-3.5 h-3.5" />
+                            )}
+                            Approve Visit
                           </button>
-                        ))}
+                        )}
+                        {lead.status !== "completed" && (
+                          <button
+                            onClick={() => handleStatusChange(lead.id, "completed")}
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-navy text-white text-xs font-semibold hover:bg-navy-light transition-all"
+                          >
+                            <CheckCircle className="w-3.5 h-3.5" />
+                            Mark as Completed
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-500/10 text-red-600 text-xs font-semibold hover:bg-red-500/20 transition-all ml-auto"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
+                        </button>
                       </div>
                     </div>
                   )}

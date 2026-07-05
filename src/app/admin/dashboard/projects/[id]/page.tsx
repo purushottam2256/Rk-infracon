@@ -14,7 +14,7 @@ interface ProjectData {
   price: string; price_range: string; plot_sizes: string; total_area: string;
   total_plots: number; status: string; featured: boolean;
   thumbnail: string; hero_image: string; gallery_images: string[];
-  layout_image: string; amenities: string[]; highlights: string[];
+  layout_image: string; video_url: string; amenities: string[]; highlights: string[];
   lat: number; lng: number;
 }
 
@@ -23,7 +23,7 @@ const emptyProject: ProjectData = {
   price: "", price_range: "", plot_sizes: "", total_area: "",
   total_plots: 0, status: "ongoing", featured: false,
   thumbnail: "", hero_image: "", gallery_images: [],
-  layout_image: "", amenities: [], highlights: [],
+  layout_image: "", video_url: "", amenities: [], highlights: [],
   lat: 0, lng: 0,
 };
 
@@ -46,7 +46,11 @@ export default function ProjectEditorPage() {
       const res = await fetch(`/api/projects/${id}`);
       if (!res.ok) throw new Error("Not found");
       const data = await res.json();
-      setForm(data.project);
+      
+      const videoUrl = data.project.gallery_images?.find((u: string) => u.startsWith("video:"))?.replace("video:", "") || "";
+      const galleryImages = (data.project.gallery_images || []).filter((u: string) => !u.startsWith("video:"));
+      
+      setForm({ ...data.project, video_url: videoUrl, gallery_images: galleryImages });
     } catch { router.push("/admin/dashboard/projects"); }
     finally { setLoading(false); }
   }, [id, router]);
@@ -127,9 +131,17 @@ export default function ProjectEditorPage() {
     try {
       const url = isNew ? "/api/projects" : `/api/projects/${id}`;
       const method = isNew ? "POST" : "PUT";
+      
+      const payload = { ...form };
+      payload.gallery_images = [...form.gallery_images];
+      if (form.video_url) {
+        payload.gallery_images.push(`video:${form.video_url}`);
+      }
+      delete (payload as any).video_url;
+
       const res = await fetch(url, {
         method, headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Save failed");
       router.push("/admin/dashboard/projects");
@@ -252,11 +264,17 @@ export default function ProjectEditorPage() {
         </div>
       </div>
 
-      {/* Images */}
+      {/* Media & Gallery */}
       <div className="bg-white rounded-2xl border border-cream-dark p-6 space-y-5">
-        <h2 className="font-heading text-lg font-bold text-navy border-b border-cream-dark pb-3">Images</h2>
-        <p className="text-xs text-slate-medium">Images are auto-compressed to WebP before upload to save storage.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <h2 className="font-heading text-lg font-bold text-navy border-b border-cream-dark pb-3">Media & Gallery</h2>
+        <p className="text-xs text-slate-medium">Images are auto-compressed to WebP before upload to save storage. Add a YouTube URL for the project video.</p>
+        
+        <div>
+          <label className="block text-xs font-semibold text-navy uppercase tracking-wider mb-1.5">Project Video URL (YouTube)</label>
+          <input type="url" value={form.video_url} onChange={(e) => updateField("video_url", e.target.value)} placeholder="e.g. https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 bg-cream rounded-xl border border-cream-dark text-navy text-sm focus:border-gold/40 focus:ring-2 focus:ring-gold/10 outline-none transition-all mb-2" />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
           <ImageUploadBox field="thumbnail" label="Thumbnail (Card)" maxW={800} current={form.thumbnail} />
           <ImageUploadBox field="hero_image" label="Hero Image" maxW={1920} current={form.hero_image} />
           <ImageUploadBox field="layout_image" label="Layout Plan" maxW={1200} current={form.layout_image} />

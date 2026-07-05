@@ -63,7 +63,7 @@ export default async function Footer() {
             </div>
             <div className="flex gap-3">
               <Link
-                href="/contact"
+                href="/contact?tab=visit"
                 id="footer-cta-contact"
                 className="bg-gradient-gold text-navy px-7 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
               >

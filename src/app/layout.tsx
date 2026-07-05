@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
+export const revalidate = 0;
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -50,8 +52,8 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
 
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
-      <body className="antialiased">
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
         <SettingsProvider settings={settings}>
           {children}
           <FloatingContact />

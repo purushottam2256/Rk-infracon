@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -61,6 +62,8 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) throw error;
+    revalidatePath("/");
+    revalidatePath("/projects");
     return NextResponse.json({ success: true, project: data }, { status: 201 });
   } catch (error) {
     console.error("Project create error:", error);

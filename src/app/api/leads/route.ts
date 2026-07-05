@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
         await transporter.sendMail({
           from: `"RK Infracon Website" <${process.env.SMTP_USER}>`,
-          to: "info@rkinfracon.in",
+          to: "rkopenplots@gmail.com",
           subject,
           html: `
             <h2>${isVisitBooking ? "New Visit Booking" : "New Inquiry"} Received</h2>
@@ -129,7 +129,11 @@ export async function GET(request: NextRequest) {
       .range(from, to);
 
     if (status && status !== "all") {
-      query = query.eq("status", status);
+      if (status === "active") {
+        query = query.in("status", ["pending", "in-progress"]);
+      } else {
+        query = query.eq("status", status);
+      }
     }
 
     if (type && type !== "all") {
